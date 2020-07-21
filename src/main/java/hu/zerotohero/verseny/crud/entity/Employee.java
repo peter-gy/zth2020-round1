@@ -5,9 +5,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 
-//@Entity
+@Entity
 public class Employee {
-/*
+
     public enum Job {
         MANAGER,
         CASHIER,
@@ -22,5 +22,4 @@ public class Employee {
     private Location worksAt;
     private Equipment operates;
 
- */
 }
