@@ -19,6 +19,7 @@ public class SquareServiceImpl implements SquareService {
         // no square can be formed from less than 4 vertices
         if (vertices.size() < 4) return 0;
 
+        // keeping track of the found diagonals represented by pairs of vertices
         Set<Pair<Point, Point>> toSkip = new HashSet<>();
 
         Integer count = 0;
@@ -29,10 +30,12 @@ public class SquareServiceImpl implements SquareService {
                 if (pair == null) continue;
                 if (vertices.contains(pair.getFirst()) && vertices.contains(pair.getSecond())) {
                     count++;
-                    toSkip.add(Pair.of(vertexA, vertexC));
-                    toSkip.add(Pair.of(vertexC, vertexA));
-                    toSkip.add(pair);
-                    toSkip.add(Pair.of(pair.getSecond(), pair.getFirst()));
+                    toSkip.addAll(Arrays.asList(
+                            Pair.of(vertexA, vertexC), // current pair
+                            Pair.of(vertexC, vertexA), // current pair reversed
+                            pair, // found vertices
+                            Pair.of(pair.getSecond(), pair.getFirst()) // found vertices reversed
+                    ));
                 }
             }
         }
