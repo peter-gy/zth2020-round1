@@ -11,6 +11,6 @@ public class HTTPStatusController {
 
     @GetMapping("/getStatusDescription")
     public String getStatusDescription(@RequestParam(value = "statusCode", defaultValue = "500") Integer statusCode) {
-        return null; //TODO implement me!
+        return "Hi"; //TODO implement me!
     }
 }
