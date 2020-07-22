@@ -1,16 +1,11 @@
 package hu.zerotohero.verseny.crud.service;
 
-import hu.zerotohero.verseny.crud.repository.EmployeeRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import hu.zerotohero.verseny.crud.entity.Employee;
 
-@Service
-public class EmployeeService {
+public interface EmployeeService {
 
-    private final EmployeeRepository employeeRepository;
+    Employee createEmployee(Employee employee);
+    Employee updateEmployee(Long id, Employee employee);
+    void deleteEmployee(Long id);
 
-    @Autowired
-    public EmployeeService(EmployeeRepository employeeRepository) {
-        this.employeeRepository = employeeRepository;
-    }
 }

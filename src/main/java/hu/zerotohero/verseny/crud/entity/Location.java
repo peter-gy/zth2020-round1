@@ -1,16 +1,25 @@
 package hu.zerotohero.verseny.crud.entity;
 
+
+import org.springframework.data.relational.core.mapping.Table;
+
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
+@Table
 public class Location {
 
     @Id
     @GeneratedValue
     private Long id;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String address;
 
     public Location() {}
@@ -23,10 +32,6 @@ public class Location {
 
     public Long getId() {
         return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getName() {

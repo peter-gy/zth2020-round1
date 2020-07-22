@@ -1,18 +1,11 @@
 package hu.zerotohero.verseny.crud.service;
 
-import hu.zerotohero.verseny.crud.repository.EquipmentRepository;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import hu.zerotohero.verseny.crud.entity.Equipment;
 
-@Service
-public class EquipmentService {
+public interface EquipmentService {
 
-    private final EquipmentRepository equipmentRepository;
-
-    @Autowired
-    public EquipmentService(EquipmentRepository equipmentRepository) {
-        this.equipmentRepository = equipmentRepository;
-    }
-
+    Equipment createEquipment(Equipment equipment);
+    Equipment updateEquipment(Long id, Equipment equipment);
+    void deleteEquipment(Long id);
 
 }

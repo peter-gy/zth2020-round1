@@ -28,47 +28,86 @@ public class CrudController {
 
     @PostMapping("/location")
     public ResponseEntity<Location> createLocation(@RequestBody Location location) {
-        return null;
+        try {
+            return new ResponseEntity<>(locationService.createLocation(location), HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/equipment")
     public ResponseEntity<Equipment> createEquipment(@RequestBody Equipment equipment) {
-        return null;
+        try {
+            return new ResponseEntity<>(equipmentService.createEquipment(equipment), HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PostMapping("/employee")
     public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
-        return null;
+        try {
+            return new ResponseEntity<>(employeeService.createEmployee(employee), HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/location/{id}")
     public ResponseEntity<Location> updateLocation(@PathVariable("id") Long id, @RequestBody Location location) {
-        return null;
+        try {
+            return new ResponseEntity<>(locationService.updateLocation(id, location), HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/equipment/{id}")
     public ResponseEntity<Equipment> updateEquipment(@PathVariable("id") Long id, @RequestBody Equipment equipment) {
-        return null;
+        try {
+            return new ResponseEntity<>(equipmentService.updateEquipment(id, equipment), HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @PutMapping("/employee/{id}")
     public ResponseEntity<Employee> updateEmployee(@PathVariable("id") Long id, @RequestBody Employee employee) {
-        return null;
+        try {
+            return new ResponseEntity<>(employeeService.updateEmployee(id, employee), HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/location/{id}")
     public ResponseEntity<Void> deleteLocation(@PathVariable("id") Long id) {
-        return null;
+        try {
+            locationService.deleteLocation(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/equipment/{id}")
     public ResponseEntity<Void> deleteEquipment(@PathVariable("id") Long id) {
-        return null;
+        try {
+            equipmentService.deleteEquipment(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
     @DeleteMapping("/employee/{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable("id") Long id) {
-        return null;
+        try {
+            equipmentService.deleteEquipment(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (IllegalArgumentException e) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
 
 }
