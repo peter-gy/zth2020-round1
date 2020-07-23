@@ -2,13 +2,7 @@ package hu.zerotohero.verseny.crud.entity;
 
 import org.springframework.data.relational.core.mapping.Table;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Enumerated;
-import javax.persistence.OneToOne;
-import javax.persistence.JoinColumn;
+import javax.persistence.*;
 
 @Entity
 @Table
@@ -25,13 +19,13 @@ public class Equipment {
 
     private String name;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Type type;
 
     @OneToOne
     @JoinColumn(nullable = false)
-    private Location locatedAt;
+    private Location locatedat;
 
     public Equipment() {}
 
@@ -55,12 +49,12 @@ public class Equipment {
         this.type = type;
     }
 
-    public Location getLocatedAt() {
-        return locatedAt;
+    public Location getLocatedat() {
+        return locatedat;
     }
 
-    public void setLocatedAt(Location locatedAt) {
-        this.locatedAt = locatedAt;
+    public void setLocatedat(Location locatedAt) {
+        this.locatedat = locatedAt;
     }
 
     @Override
@@ -69,7 +63,7 @@ public class Equipment {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", type=" + type +
-                ", locatedAt=" + locatedAt +
+                ", locatedAt=" + locatedat +
                 '}';
     }
 }

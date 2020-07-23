@@ -8,10 +8,11 @@ import hu.zerotohero.verseny.crud.service.EquipmentService;
 import hu.zerotohero.verseny.crud.service.LocationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping(path = "/api", headers = {"Accept=application/json", "Content-type=application/json"})
 public class CrudController {
 
     private final LocationService locationService;
@@ -28,86 +29,61 @@ public class CrudController {
 
     @PostMapping("/location")
     public ResponseEntity<Location> createLocation(@RequestBody Location location) {
-        try {
-            return new ResponseEntity<>(locationService.createLocation(location), HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        Location loc = locationService.createLocation(location);
+        System.out.println("loc = " + loc);
+        return new ResponseEntity<>(loc, HttpStatus.CREATED);
     }
 
     @PostMapping("/equipment")
     public ResponseEntity<Equipment> createEquipment(@RequestBody Equipment equipment) {
-        try {
-            return new ResponseEntity<>(equipmentService.createEquipment(equipment), HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        Equipment eq = equipmentService.createEquipment(equipment);
+        System.out.println("eq = " + eq);
+        return new ResponseEntity<>(eq, HttpStatus.CREATED);
     }
 
     @PostMapping("/employee")
     public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
-        try {
-            return new ResponseEntity<>(employeeService.createEmployee(employee), HttpStatus.CREATED);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        Employee emp = employeeService.createEmployee(employee);
+        System.out.println("emp = " + emp);
+        return new ResponseEntity<>(emp, HttpStatus.CREATED);
     }
 
     @PutMapping("/location/{id}")
     public ResponseEntity<Location> updateLocation(@PathVariable("id") Long id, @RequestBody Location location) {
-        try {
-            return new ResponseEntity<>(locationService.updateLocation(id, location), HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>(locationService.updateLocation(id, location), HttpStatus.OK);
     }
 
     @PutMapping("/equipment/{id}")
     public ResponseEntity<Equipment> updateEquipment(@PathVariable("id") Long id, @RequestBody Equipment equipment) {
-        try {
-            return new ResponseEntity<>(equipmentService.updateEquipment(id, equipment), HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>(equipmentService.updateEquipment(id, equipment), HttpStatus.OK);
     }
 
     @PutMapping("/employee/{id}")
     public ResponseEntity<Employee> updateEmployee(@PathVariable("id") Long id, @RequestBody Employee employee) {
-        try {
-            return new ResponseEntity<>(employeeService.updateEmployee(id, employee), HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        return new ResponseEntity<>(employeeService.updateEmployee(id, employee), HttpStatus.OK);
     }
 
     @DeleteMapping("/location/{id}")
     public ResponseEntity<Void> deleteLocation(@PathVariable("id") Long id) {
-        try {
-            locationService.deleteLocation(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        locationService.deleteLocation(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/equipment/{id}")
     public ResponseEntity<Void> deleteEquipment(@PathVariable("id") Long id) {
-        try {
-            equipmentService.deleteEquipment(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        equipmentService.deleteEquipment(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/employee/{id}")
     public ResponseEntity<Void> deleteEmployee(@PathVariable("id") Long id) {
-        try {
-            equipmentService.deleteEquipment(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (IllegalArgumentException e) {
-            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-        }
+        employeeService.deleteEmployee(id);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @ExceptionHandler({IllegalArgumentException.class, HttpMediaTypeNotSupportedException.class})
+    public ResponseEntity<?> handleException() {
+        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
 }

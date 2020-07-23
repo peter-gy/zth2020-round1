@@ -25,7 +25,7 @@ public class EmployeeServiceImpl implements EmployeeService {
         Employee toUpdate = employeeRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         toUpdate.setName(employee.getName());
         toUpdate.setJob(employee.getJob());
-        toUpdate.setWorksAt(employee.getWorksAt());
+        toUpdate.setWorksat(employee.getWorksat());
         toUpdate.setOperates(employee.getOperates());
         return employeeRepository.save(toUpdate);
     }

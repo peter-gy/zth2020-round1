@@ -2,14 +2,7 @@ package hu.zerotohero.verseny.crud.entity;
 
 import org.springframework.data.relational.core.mapping.Table;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Enumerated;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 
 @Entity
 @Table
@@ -28,13 +21,13 @@ public class Employee {
     @Column(nullable = false)
     private String name;
 
-    @Enumerated
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     private Job job;
 
     @ManyToOne
     @JoinColumn(nullable = false)
-    private Location worksAt;
+    private Location worksat;
 
     @OneToOne
     @JoinColumn(nullable = false)
@@ -62,12 +55,12 @@ public class Employee {
         this.job = job;
     }
 
-    public Location getWorksAt() {
-        return worksAt;
+    public Location getWorksat() {
+        return worksat;
     }
 
-    public void setWorksAt(Location worksAt) {
-        this.worksAt = worksAt;
+    public void setWorksat(Location worksAt) {
+        this.worksat = worksAt;
     }
 
     public Equipment getOperates() {
@@ -84,7 +77,7 @@ public class Employee {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", job=" + job +
-                ", worksAt=" + worksAt +
+                ", worksAt=" + worksat +
                 ", operates=" + operates +
                 '}';
     }

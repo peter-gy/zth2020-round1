@@ -25,7 +25,7 @@ public class EquipmentServiceImpl implements EquipmentService {
         Equipment toUpdate = equipmentRepository.findById(id).orElseThrow(IllegalArgumentException::new);
         toUpdate.setName(equipment.getName());
         toUpdate.setType(equipment.getType());
-        toUpdate.setLocatedAt(equipment.getLocatedAt());
+        toUpdate.setLocatedat(equipment.getLocatedat());
         return equipmentRepository.save(toUpdate);
     }
 
