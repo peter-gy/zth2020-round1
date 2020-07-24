@@ -2,6 +2,7 @@ package hu.zerotohero.verseny.crud.service;
 
 import hu.zerotohero.verseny.crud.entity.Location;
 import hu.zerotohero.verseny.crud.repository.LocationRepository;
+import hu.zerotohero.verseny.crud.util.PropertyCopier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,8 +24,7 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public Location updateLocation(Long id, Location location) {
         Location toUpdate = locationRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        toUpdate.setName(location.getName());
-        toUpdate.setAddress(location.getAddress());
+        PropertyCopier.copyNonNullProperties(location, toUpdate);
         return locationRepository.save(toUpdate);
     }
 

@@ -2,6 +2,7 @@ package hu.zerotohero.verseny.crud.service;
 
 import hu.zerotohero.verseny.crud.entity.Equipment;
 import hu.zerotohero.verseny.crud.repository.EquipmentRepository;
+import hu.zerotohero.verseny.crud.util.PropertyCopier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +24,7 @@ public class EquipmentServiceImpl implements EquipmentService {
     @Override
     public Equipment updateEquipment(Long id, Equipment equipment) {
         Equipment toUpdate = equipmentRepository.findById(id).orElseThrow(IllegalArgumentException::new);
-        toUpdate.setName(equipment.getName());
-        toUpdate.setType(equipment.getType());
-        toUpdate.setLocatedat(equipment.getLocatedat());
+        PropertyCopier.copyNonNullProperties(equipment, toUpdate);
         return equipmentRepository.save(toUpdate);
     }
 

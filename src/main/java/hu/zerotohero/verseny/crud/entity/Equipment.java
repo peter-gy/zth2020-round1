@@ -1,8 +1,10 @@
 package hu.zerotohero.verseny.crud.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.data.relational.core.mapping.Table;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table
@@ -23,9 +25,9 @@ public class Equipment {
     @Column(nullable = false)
     private Type type;
 
-    @OneToOne
+    @ManyToOne
     @JoinColumn(nullable = false)
-    private Location locatedat;
+    private Location locatedAt;
 
     public Equipment() {}
 
@@ -49,12 +51,29 @@ public class Equipment {
         this.type = type;
     }
 
-    public Location getLocatedat() {
-        return locatedat;
+    @JsonProperty("locatedat")
+    public Location getLocatedAt() {
+        return locatedAt;
     }
 
-    public void setLocatedat(Location locatedAt) {
-        this.locatedat = locatedAt;
+    public void setLocatedAt(Location locatedAt) {
+        this.locatedAt = locatedAt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Equipment equipment = (Equipment) o;
+        return id.equals(equipment.id) &&
+                Objects.equals(name, equipment.name) &&
+                type == equipment.type &&
+                locatedAt.equals(equipment.locatedAt);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, type, locatedAt);
     }
 
     @Override
@@ -63,7 +82,7 @@ public class Equipment {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", type=" + type +
-                ", locatedAt=" + locatedat +
+                ", locatedAt=" + locatedAt +
                 '}';
     }
 }
