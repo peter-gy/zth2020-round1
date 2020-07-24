@@ -16,17 +16,15 @@ public class Equipment {
     }
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Type type;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
     private Location locatedAt;
 
     public Equipment() {}

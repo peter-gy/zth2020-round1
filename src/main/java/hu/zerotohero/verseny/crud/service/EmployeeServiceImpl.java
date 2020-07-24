@@ -30,23 +30,44 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee createEmployee(Employee employee) {
-        if (isManagerEmployable(employee))
-            throw new IllegalArgumentException("Only one manager is allowed per location");
-
+        switch (employee.getJob()) {
+            case MANAGER:
+                if (!isManagerEmployable(employee))
+                    throw new IllegalArgumentException("Only one manager can work at a location");
+                break;
+            case CASHIER:
+                if (!isCashierEmployable(employee))
+                    throw new IllegalArgumentException("There is not enough cash registers at the location");
+                break;
+            case COOK:
+                if (!isCookEmployable(employee))
+                    throw new IllegalArgumentException("There is not enough ovens at the location");
+                break;
+        }
         return employeeRepository.save(employee);
     }
 
     private boolean isManagerEmployable(Employee employee) {
+        if (employee.getJob() != Employee.Job.MANAGER)
+            throw new IllegalArgumentException("Employee is not a manager!");
         long managerCountAtLocation = employeeCountAtLocation(employee.getWorksAt(), Employee.Job.MANAGER);
-        return !(managerCountAtLocation != 0 && employee.getJob() == Employee.Job.MANAGER);
+        return managerCountAtLocation == 0;
     }
 
     private boolean isCashierEmployable(Employee employee) {
-        long cashRegisterCount = StreamSupport.stream(equipmentRepository.findAll().spliterator(), false)
-                .filter(equipment -> equipment.getType() == Equipment.Type.CASH_REGISTER)
-                .count();
+        if (employee.getJob() != Employee.Job.CASHIER)
+            throw new IllegalArgumentException("Employee is not a cashier!");
+        long cashRegisterCountAtLocation = equipmentCountAtLocation(employee.getWorksAt(), Equipment.Type.CASH_REGISTER);
         long cashierCountAtLocation = employeeCountAtLocation(employee.getWorksAt(), Employee.Job.CASHIER);
-        return cashRegisterCount > cashierCountAtLocation;
+        return cashRegisterCountAtLocation > cashierCountAtLocation;
+    }
+
+    private boolean isCookEmployable(Employee employee) {
+        if (employee.getJob() != Employee.Job.COOK)
+            throw new IllegalArgumentException("Employee is not a cook!");
+        long ovenCountAtLocation = equipmentCountAtLocation(employee.getWorksAt(), Equipment.Type.OVEN);
+        long cookCountAtLocation = employeeCountAtLocation(employee.getWorksAt(), Employee.Job.COOK);
+        return ovenCountAtLocation > cookCountAtLocation;
     }
 
     private long employeeCountAtLocation(Location location, Employee.Job job) {

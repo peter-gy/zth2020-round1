@@ -17,22 +17,18 @@ public class Employee {
     }
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
     private String name;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private Job job;
 
     @ManyToOne
-    @JoinColumn(nullable = false)
     private Location worksAt;
 
     @OneToOne
-    @JoinColumn(nullable = false)
     private Equipment operates;
 
     public Employee() {}
