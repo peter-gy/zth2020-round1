@@ -3,13 +3,11 @@ package hu.zerotohero.verseny.crud;
 import hu.zerotohero.verseny.crud.entity.Employee;
 import hu.zerotohero.verseny.crud.entity.Equipment;
 import hu.zerotohero.verseny.crud.entity.Location;
-import hu.zerotohero.verseny.crud.exception.BadLogicException;
 import hu.zerotohero.verseny.crud.service.EmployeeService;
 import hu.zerotohero.verseny.crud.service.EquipmentService;
 import hu.zerotohero.verseny.crud.service.LocationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.annotation.*;
 
 @RestController

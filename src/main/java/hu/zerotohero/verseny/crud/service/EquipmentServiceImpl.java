@@ -1,7 +1,7 @@
 package hu.zerotohero.verseny.crud.service;
 
 import hu.zerotohero.verseny.crud.entity.Equipment;
-import hu.zerotohero.verseny.crud.exception.UndefinedDependenceException;
+import hu.zerotohero.verseny.crud.exception.EntityDependenceException;
 import hu.zerotohero.verseny.crud.repository.EquipmentRepository;
 import hu.zerotohero.verseny.crud.repository.LocationRepository;
 import hu.zerotohero.verseny.crud.util.PropertyCopier;
@@ -26,7 +26,7 @@ public class EquipmentServiceImpl implements EquipmentService {
         // validate dependency
         Long locatedAtId = equipment.getLocatedAt().getId();
         if (!locationRepository.findById(locatedAtId).isPresent())
-            throw new UndefinedDependenceException("Location of equipment is not defined yet");
+            throw new EntityDependenceException("Location of equipment is not defined yet");
 
         return equipmentRepository.save(equipment);
     }
