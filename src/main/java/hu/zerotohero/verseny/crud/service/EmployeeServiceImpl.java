@@ -3,6 +3,9 @@ package hu.zerotohero.verseny.crud.service;
 import hu.zerotohero.verseny.crud.entity.Employee;
 import hu.zerotohero.verseny.crud.entity.Equipment;
 import hu.zerotohero.verseny.crud.entity.Location;
+import hu.zerotohero.verseny.crud.exception.InsufficientEquipmentException;
+import hu.zerotohero.verseny.crud.exception.TooManyManagersException;
+import hu.zerotohero.verseny.crud.exception.UndefinedDependenceException;
 import hu.zerotohero.verseny.crud.repository.EmployeeRepository;
 import hu.zerotohero.verseny.crud.repository.EquipmentRepository;
 import hu.zerotohero.verseny.crud.repository.LocationRepository;
@@ -30,20 +33,31 @@ public class EmployeeServiceImpl implements EmployeeService {
 
     @Override
     public Employee createEmployee(Employee employee) {
+        // validate dependencies
+        Long worksAtId = employee.getWorksAt().getId();
+        if (!locationRepository.findById(worksAtId).isPresent())
+            throw new UndefinedDependenceException("Location of employee is not defined yet");
+
+        Long operatesId = employee.getOperates().getId();
+        if (!equipmentRepository.findById(operatesId).isPresent())
+            throw new UndefinedDependenceException("Equipment of employee is not defined yet");
+
+        // validate employment logic
         switch (employee.getJob()) {
             case MANAGER:
                 if (!isManagerEmployable(employee))
-                    throw new IllegalArgumentException("Only one manager can work at a location");
+                    throw new TooManyManagersException("Only one manager can work at a location");
                 break;
             case CASHIER:
                 if (!isCashierEmployable(employee))
-                    throw new IllegalArgumentException("There is not enough cash registers at the location");
+                    throw new InsufficientEquipmentException("There is not enough cash registers at the location");
                 break;
             case COOK:
                 if (!isCookEmployable(employee))
-                    throw new IllegalArgumentException("There is not enough ovens at the location");
+                    throw new InsufficientEquipmentException("There is not enough ovens at the location");
                 break;
         }
+
         return employeeRepository.save(employee);
     }
 

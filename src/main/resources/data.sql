@@ -8,3 +8,8 @@ INSERT INTO equipment (type, located_at_id) VALUES ('OVEN', 3)
 INSERT INTO equipment (type, located_at_id) VALUES ('CASH_REGISTER', 2)
 INSERT INTO equipment (type, located_at_id) VALUES ('CASH_REGISTER', 3)
 INSERT INTO equipment (type, located_at_id) VALUES ('CASH_REGISTER', 4)
+
+INSERT INTO employee (name, job, operates_id, works_at_id) VALUES ('Joe', 'COOK', 1, 1)
+INSERT INTO employee (name, job, operates_id, works_at_id) VALUES ('Ben', 'COOK', 2, 2)
+INSERT INTO employee (name, job, operates_id, works_at_id) VALUES ('Boe', 'MANAGER', 3, 3)
+INSERT INTO employee (name, job, operates_id, works_at_id) VALUES ('Pam', 'CASHIER', 4, 1)
