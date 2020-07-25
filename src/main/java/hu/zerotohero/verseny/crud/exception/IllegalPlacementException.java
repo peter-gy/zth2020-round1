@@ -1,6 +1,6 @@
 package hu.zerotohero.verseny.crud.exception;
 
-public class IllegalPlacementException extends LogicalException {
+public class IllegalPlacementException extends BadLogicException {
 
     public IllegalPlacementException() {
     }

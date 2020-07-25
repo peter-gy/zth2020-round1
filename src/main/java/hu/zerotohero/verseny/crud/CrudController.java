@@ -3,6 +3,7 @@ package hu.zerotohero.verseny.crud;
 import hu.zerotohero.verseny.crud.entity.Employee;
 import hu.zerotohero.verseny.crud.entity.Equipment;
 import hu.zerotohero.verseny.crud.entity.Location;
+import hu.zerotohero.verseny.crud.exception.BadLogicException;
 import hu.zerotohero.verseny.crud.service.EmployeeService;
 import hu.zerotohero.verseny.crud.service.EquipmentService;
 import hu.zerotohero.verseny.crud.service.LocationService;
@@ -81,9 +82,10 @@ public class CrudController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @ExceptionHandler({IllegalArgumentException.class, HttpMediaTypeNotSupportedException.class})
-    public ResponseEntity<?> handleException() {
-        return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Object> handleException(Exception ex) {
+        String message = String.format("%s: %s", ex.getClass().getSimpleName(), ex.getLocalizedMessage());
+        return new ResponseEntity<>(message, HttpStatus.BAD_REQUEST);
     }
 
 }

@@ -31,6 +31,7 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public void deleteLocation(Long id) {
         Location toDelete = locationRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+
         locationRepository.delete(toDelete);
     }
 }

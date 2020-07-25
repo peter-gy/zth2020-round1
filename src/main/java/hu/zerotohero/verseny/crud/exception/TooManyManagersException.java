@@ -1,6 +1,6 @@
 package hu.zerotohero.verseny.crud.exception;
 
-public class TooManyManagersException extends LogicalException {
+public class TooManyManagersException extends BadLogicException {
 
     public TooManyManagersException() {
     }

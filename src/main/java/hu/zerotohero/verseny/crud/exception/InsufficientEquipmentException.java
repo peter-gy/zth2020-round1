@@ -1,6 +1,6 @@
 package hu.zerotohero.verseny.crud.exception;
 
-public class InsufficientEquipmentException extends LogicalException {
+public class InsufficientEquipmentException extends BadLogicException {
 
     public InsufficientEquipmentException() {
     }

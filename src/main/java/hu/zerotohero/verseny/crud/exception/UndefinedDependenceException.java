@@ -1,6 +1,6 @@
 package hu.zerotohero.verseny.crud.exception;
 
-public class UndefinedDependenceException extends LogicalException {
+public class UndefinedDependenceException extends BadLogicException {
 
     public UndefinedDependenceException() {
     }
