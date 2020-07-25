@@ -46,6 +46,8 @@ public class LocationServiceImpl implements LocationService {
     @Override
     public void deleteLocation(Long id) {
         Location toDelete = locationRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+
+        // check dependencies before deletion
         List<Employee> dependentEmployees = StreamSupport.stream(employeeRepository.findAll().spliterator(), false)
                 .filter(employee -> employee.getWorksAt().getId().equals(id))
                 .collect(Collectors.toList());
@@ -65,7 +67,9 @@ public class LocationServiceImpl implements LocationService {
                     .map(String::valueOf)
                     .collect(Collectors.joining(", "));
 
-            String message = String.format("Dependent Equipment IDs: [%s], Dependent Employee IDs: [%s]",
+            String message = String.format("Some entities depend on this location. " +
+                                            "Dependent Equipment IDs: [%s]. " +
+                                            "Dependent Employee IDs: [%s].",
                                             dependentEquipmentIds, dependentEmployeeIds);
             throw new EntityDependenceException(message);
         }
