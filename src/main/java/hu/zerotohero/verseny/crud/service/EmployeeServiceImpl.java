@@ -3,6 +3,7 @@ package hu.zerotohero.verseny.crud.service;
 import hu.zerotohero.verseny.crud.entity.Employee;
 import hu.zerotohero.verseny.crud.entity.Equipment;
 import hu.zerotohero.verseny.crud.entity.Location;
+import hu.zerotohero.verseny.crud.exception.IllegalPlacementException;
 import hu.zerotohero.verseny.crud.exception.InsufficientEquipmentException;
 import hu.zerotohero.verseny.crud.exception.TooManyManagersException;
 import hu.zerotohero.verseny.crud.exception.UndefinedDependenceException;
@@ -41,6 +42,10 @@ public class EmployeeServiceImpl implements EmployeeService {
         Long operatesId = employee.getOperates().getId();
         if (!equipmentRepository.findById(operatesId).isPresent())
             throw new UndefinedDependenceException("Equipment of employee is not defined yet");
+
+        // validate placement logic
+        if (!employee.getWorksAt().equals(employee.getOperates().getLocatedAt()))
+            throw new IllegalPlacementException("The operated equipment and the employee must be at the same location");
 
         // validate employment logic
         switch (employee.getJob()) {
