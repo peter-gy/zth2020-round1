@@ -32,26 +32,64 @@ public class EquipmentServiceImpl implements EquipmentService {
 
     @Override
     public Equipment createEquipment(Equipment equipment) {
-        // validate dependency
-        Long locatedAtId = equipment.getLocatedAt().getId();
-        if (!locationRepository.findById(locatedAtId).isPresent())
-            throw new EntityDependenceException("Location of equipment is not defined yet");
-
+        validateDependencyExistence(equipment);
+        equipment.setLocatedAt(locationRepository.findById(equipment.getLocatedAt().getId()).get());
         return equipmentRepository.save(equipment);
     }
 
     @Override
     public Equipment updateEquipment(Long id, Equipment equipment) {
-        Equipment toUpdate = equipmentRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        Equipment toUpdate = equipmentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No equipment with an id of " + id + " was found"));
         PropertyCopier.copyNonNullProperties(equipment, toUpdate);
+
+        validateDependencyExistence(toUpdate);
+        validatePlacementLogic(id);
+
+        toUpdate.setLocatedAt(locationRepository.findById(toUpdate.getLocatedAt().getId()).get());
         return equipmentRepository.save(toUpdate);
     }
 
     @Override
     public void deleteEquipment(Long id) {
-        Equipment toDelete = equipmentRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        Equipment toDelete = equipmentRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No equipment with an id of " + id + " was found"));
+        validateEntityDependence(id);
+        equipmentRepository.delete(toDelete);
+    }
 
-        // check dependencies before deletion
+    // Pre-creation and Pre-update
+    private void validateDependencyExistence(Equipment equipment) {
+        if (equipment.getLocatedAt() == null) return;
+        Long locatedAtId = equipment.getLocatedAt().getId();
+        if (!locationRepository.findById(locatedAtId).isPresent())
+            throw new EntityDependenceException("Location of equipment is not defined yet");
+    }
+
+    // Pre-update
+    private void validatePlacementLogic(Long id) {
+        List<Employee> dependentEmployees = StreamSupport.stream(employeeRepository.findAll().spliterator(), false)
+                .filter(employee -> employee.getOperates().getId().equals(id))
+                .collect(Collectors.toList());
+
+        boolean conflict = dependentEmployees.stream()
+                .anyMatch(employee -> !employee.getOperates().getLocatedAt().getId().equals(employee.getWorksAt().getId()));
+
+        if (!dependentEmployees.isEmpty() && conflict) {
+            String dependentEmployeeIds = dependentEmployees.stream()
+                    .map(Employee::getId)
+                    .map(String::valueOf)
+                    .collect(Collectors.joining(", "));
+
+            String message = String.format("Some entities depend on this equipment. " +
+                            "Dependent Employee IDs: [%s].",
+                            dependentEmployeeIds);
+            throw new EntityDependenceException(message);
+        }
+    }
+
+    // Pre-deletion
+    private void validateEntityDependence(Long id) {
         List<Employee> dependentEmployees = StreamSupport.stream(employeeRepository.findAll().spliterator(), false)
                 .filter(employee -> employee.getOperates().getId().equals(id))
                 .collect(Collectors.toList());
@@ -64,10 +102,9 @@ public class EquipmentServiceImpl implements EquipmentService {
 
             String message = String.format("Some entities depend on this equipment. " +
                             "Dependent Employee IDs: [%s].",
-                            dependentEmployeeIds);
+                    dependentEmployeeIds);
             throw new EntityDependenceException(message);
         }
-
-        equipmentRepository.delete(toDelete);
     }
+
 }

@@ -29,21 +29,18 @@ public class CrudController {
     @PostMapping("/location")
     public ResponseEntity<Location> createLocation(@RequestBody Location location) {
         Location loc = locationService.createLocation(location);
-        System.out.println("loc = " + loc);
         return new ResponseEntity<>(loc, HttpStatus.CREATED);
     }
 
     @PostMapping("/equipment")
     public ResponseEntity<Equipment> createEquipment(@RequestBody Equipment equipment) {
         Equipment eq = equipmentService.createEquipment(equipment);
-        System.out.println("eq = " + eq);
         return new ResponseEntity<>(eq, HttpStatus.CREATED);
     }
 
     @PostMapping("/employee")
     public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
         Employee emp = employeeService.createEmployee(employee);
-        System.out.println("emp = " + emp);
         return new ResponseEntity<>(emp, HttpStatus.CREATED);
     }
 

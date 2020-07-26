@@ -38,16 +38,22 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public Location updateLocation(Long id, Location location) {
-        Location toUpdate = locationRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        Location toUpdate = locationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No location with an id of " + id + " was found"));
         PropertyCopier.copyNonNullProperties(location, toUpdate);
         return locationRepository.save(toUpdate);
     }
 
     @Override
     public void deleteLocation(Long id) {
-        Location toDelete = locationRepository.findById(id).orElseThrow(IllegalArgumentException::new);
+        Location toDelete = locationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("No location with an id of " + id + " was found"));
+        validateEntityDependence(id);
+        locationRepository.delete(toDelete);
+    }
 
-        // check dependencies before deletion
+    // Pre-delete
+    private void validateEntityDependence(Long id) {
         List<Employee> dependentEmployees = StreamSupport.stream(employeeRepository.findAll().spliterator(), false)
                 .filter(employee -> employee.getWorksAt().getId().equals(id))
                 .collect(Collectors.toList());
@@ -73,7 +79,6 @@ public class LocationServiceImpl implements LocationService {
                                             dependentEquipmentIds, dependentEmployeeIds);
             throw new EntityDependenceException(message);
         }
-
-        locationRepository.delete(toDelete);
     }
+
 }

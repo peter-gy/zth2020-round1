@@ -12,17 +12,16 @@ public class Location {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, updatable = false)
     private Long id;
+
+    @Column(nullable = false)
     private String name;
+
+    @Column(nullable = false)
     private String address;
 
     public Location() {}
-
-    public Location(Long id, String name, String address) {
-        this.id = id;
-        this.name = name;
-        this.address = address;
-    }
 
     public Long getId() {
         return id;

@@ -17,14 +17,18 @@ public class Equipment {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(nullable = false, updatable = false)
     private Long id;
 
+    @Column(nullable = true)
     private String name;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, updatable = false)
     private Type type;
 
     @ManyToOne
+    @JoinColumn(nullable = false)
     private Location locatedAt;
 
     public Equipment() {}
