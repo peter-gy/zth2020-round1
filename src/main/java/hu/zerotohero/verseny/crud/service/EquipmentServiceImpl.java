@@ -44,9 +44,9 @@ public class EquipmentServiceImpl implements EquipmentService {
         PropertyCopier.copyNonNullProperties(equipment, toUpdate);
 
         validateDependencyExistence(toUpdate);
+        toUpdate.setLocatedAt(locationRepository.findById(toUpdate.getLocatedAt().getId()).get());
         validatePlacementLogic(id);
 
-        toUpdate.setLocatedAt(locationRepository.findById(toUpdate.getLocatedAt().getId()).get());
         return equipmentRepository.save(toUpdate);
     }
 
@@ -60,7 +60,6 @@ public class EquipmentServiceImpl implements EquipmentService {
 
     // Pre-creation and Pre-update
     private void validateDependencyExistence(Equipment equipment) {
-        if (equipment.getLocatedAt() == null) return;
         Long locatedAtId = equipment.getLocatedAt().getId();
         if (!locationRepository.findById(locatedAtId).isPresent())
             throw new EntityDependenceException("Location of equipment is not defined yet");
