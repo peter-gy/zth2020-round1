@@ -65,7 +65,7 @@ public class EntityValidator {
     }
 
     private static void validateLocationAddress(String address) {
-        if (!address.matches("^\\d{4}"))
+        if (!address.matches("^\\d{4}.*"))
             throw new IllegalArgumentException("Location address must start with a 4-digit post code");
     }
 

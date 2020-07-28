@@ -1,7 +1,7 @@
 package hu.zerotohero.verseny.crud.entity;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Data;
+import lombok.*;
 import org.springframework.data.relational.core.mapping.Table;
 
 import javax.persistence.*;

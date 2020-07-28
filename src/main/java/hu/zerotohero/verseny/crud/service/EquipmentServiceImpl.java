@@ -20,8 +20,8 @@ import java.util.stream.StreamSupport;
 @RequiredArgsConstructor
 public class EquipmentServiceImpl implements EquipmentService {
 
-    private final EquipmentRepository equipmentRepository;
     private final LocationRepository locationRepository;
+    private final EquipmentRepository equipmentRepository;
     private final EmployeeRepository employeeRepository;
 
     @Override
