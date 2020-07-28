@@ -9,6 +9,16 @@ public class StepsServiceDynamicImpl implements StepsService {
 
     @Override
     public int getNumberOfSteps(int numberOfStairs, List<Integer> stepSizeList) {
+
+        if (numberOfStairs < 0)
+            throw new IllegalArgumentException("numberOfStairs should be non-negative");
+
+        if (stepSizeList.stream().anyMatch(i -> i <= 0))
+            throw new IllegalArgumentException("stepSizeList should not contain non-positive values");
+
+        // Stepping 1 is always a possibility
+        if (!stepSizeList.contains(1)) stepSizeList.add(1);
+
         int[] count = new int[numberOfStairs + 1];
         count[0] = 1;
 
