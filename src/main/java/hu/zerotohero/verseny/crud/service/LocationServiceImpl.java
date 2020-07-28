@@ -9,6 +9,7 @@ import hu.zerotohero.verseny.crud.repository.EquipmentRepository;
 import hu.zerotohero.verseny.crud.repository.LocationRepository;
 import hu.zerotohero.verseny.crud.util.EntityValidator;
 import hu.zerotohero.verseny.crud.util.PropertyCopier;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,20 +18,12 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
+@RequiredArgsConstructor
 public class LocationServiceImpl implements LocationService {
 
     private final LocationRepository locationRepository;
     private final EquipmentRepository equipmentRepository;
     private final EmployeeRepository employeeRepository;
-
-    @Autowired
-    public LocationServiceImpl(LocationRepository locationRepository,
-                               EquipmentRepository equipmentRepository,
-                               EmployeeRepository employeeRepository) {
-        this.locationRepository = locationRepository;
-        this.equipmentRepository = equipmentRepository;
-        this.employeeRepository = employeeRepository;
-    }
 
     @Override
     public Location createLocation(Location location) {

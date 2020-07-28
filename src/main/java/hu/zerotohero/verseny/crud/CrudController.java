@@ -6,25 +6,19 @@ import hu.zerotohero.verseny.crud.entity.Location;
 import hu.zerotohero.verseny.crud.service.EmployeeService;
 import hu.zerotohero.verseny.crud.service.EquipmentService;
 import hu.zerotohero.verseny.crud.service.LocationService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(path = "/api", headers = {"Accept=application/json", "Content-type=application/json"})
+@RequiredArgsConstructor
 public class CrudController {
 
     private final LocationService locationService;
     private final EquipmentService equipmentService;
     private final EmployeeService employeeService;
-
-    public CrudController(LocationService locationService,
-                          EquipmentService equipmentService,
-                          EmployeeService employeeService) {
-        this.locationService = locationService;
-        this.equipmentService = equipmentService;
-        this.employeeService = employeeService;
-    }
 
     @PostMapping("/location")
     public ResponseEntity<Location> createLocation(@RequestBody Location location) {
