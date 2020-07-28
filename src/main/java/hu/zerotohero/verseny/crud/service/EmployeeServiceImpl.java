@@ -3,18 +3,20 @@ package hu.zerotohero.verseny.crud.service;
 import hu.zerotohero.verseny.crud.entity.Employee;
 import hu.zerotohero.verseny.crud.entity.Equipment;
 import hu.zerotohero.verseny.crud.entity.Location;
-import hu.zerotohero.verseny.crud.exception.EntityDependenceException;
-import hu.zerotohero.verseny.crud.exception.IllegalPlacementException;
-import hu.zerotohero.verseny.crud.exception.InsufficientEquipmentException;
-import hu.zerotohero.verseny.crud.exception.TooManyManagersException;
+import hu.zerotohero.verseny.crud.exception.*;
 import hu.zerotohero.verseny.crud.repository.EmployeeRepository;
 import hu.zerotohero.verseny.crud.repository.EquipmentRepository;
 import hu.zerotohero.verseny.crud.repository.LocationRepository;
+import hu.zerotohero.verseny.crud.util.EntityValidator;
 import hu.zerotohero.verseny.crud.util.PropertyCopier;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
+import java.util.Comparator;
+import java.util.Objects;
+import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -39,8 +41,11 @@ public class EmployeeServiceImpl implements EmployeeService {
         employee.setWorksAt(locationRepository.findById(employee.getWorksAt().getId()).get());
         employee.setOperates(equipmentRepository.findById(employee.getOperates().getId()).get());
 
+        validateInput(employee);
         validatePlacementLogic(employee);
         validateEmploymentLogic(employee);
+        validateEquipmentAssignment(employee);
+        validateSalary(employee);
 
         return employeeRepository.save(employee);
     }
@@ -55,8 +60,12 @@ public class EmployeeServiceImpl implements EmployeeService {
         validateDependencyExistence(toUpdate);
         toUpdate.setWorksAt(locationRepository.findById(toUpdate.getWorksAt().getId()).get());
         toUpdate.setOperates(equipmentRepository.findById(toUpdate.getOperates().getId()).get());
+
+        validateInput(toUpdate);
         validatePlacementLogic(toUpdate);
         validateJobUpdateLogic(toUpdate);
+        validateEquipmentAssignment(toUpdate);
+        validateSalary(toUpdate);
 
         return employeeRepository.save(toUpdate);
     }
@@ -123,6 +132,56 @@ public class EmployeeServiceImpl implements EmployeeService {
         }
     }
 
+    // Pre-create and Pre-update
+    private void validateEquipmentAssignment(Employee employee) {
+        if (employee.getJob() == Employee.Job.COOK && employee.getOperates().getType() == Equipment.Type.CASH_REGISTER)
+            throw new IllegalEquipmentAssignmentException("A Cook cannot operate a cash register");
+        if (employee.getJob() == Employee.Job.CASHIER && employee.getOperates().getType() == Equipment.Type.OVEN)
+            throw new IllegalEquipmentAssignmentException("A cashier cannot operate an oven");
+    }
+
+    private void validateSalary(Employee employee) {
+        // check global salary
+        if (employee.getSalary() < 300)
+            throw new HumiliatingSalaryException("The minimal salary is 300 kopejka. Don't be heartless.");
+
+        // check local minimal salary
+        int minimalSalaryAtLocationForJob = getMinimalSalaryAtLocationForJob(employee.getWorksAt(), employee.getJob());
+        if (employee.getSalary() < minimalSalaryAtLocationForJob) {
+            String message = String.format("The salary [%d] cannot be smaller than the local minimal salary [%d].",
+                    employee.getSalary(),
+                    minimalSalaryAtLocationForJob);
+            throw new HumiliatingSalaryException(message);
+        }
+
+        // check manager salary
+        int maximalSalaryAtLocation = getMaximalSalaryAtLocation(employee.getWorksAt());
+        if (employee.getJob() == Employee.Job.MANAGER && employee.getSalary() < maximalSalaryAtLocation) {
+            String message = String.format("The manager's salary [%d] must be greater than the local maximum salary [%d].",
+                    employee.getSalary(),
+                    maximalSalaryAtLocation);
+            throw new HumiliatingSalaryException(message);
+        }
+
+        // check non-manager salary
+        double averageSalaryAtLocationForJob = getAverageSalaryAtLocationForJob(employee.getWorksAt(), employee.getJob());
+        if (averageSalaryAtLocationForJob == -1) return;
+        final double factor = 0.2;
+        final double maxDifference = factor * averageSalaryAtLocationForJob;
+        if (employee.getJob() != Employee.Job.MANAGER &&
+            Math.abs(averageSalaryAtLocationForJob - employee.getSalary()) > maxDifference) {
+            String message = String.format("The worker's salary [%d] must not differ by more than [%d]%% from the average salary [%d].",
+                    employee.getSalary(),
+                    (int)(factor * 100),
+                    maximalSalaryAtLocation);
+            throw new HumiliatingSalaryException(message);
+        }
+    }
+
+    private void validateInput(Employee employee) {
+        EntityValidator.validateEmployee(employee);
+    }
+
     private boolean isManagerEmployable(Employee employee) {
         long managerCountAtLocation = employeeCountAtLocation(employee.getWorksAt(), Employee.Job.MANAGER);
         return managerCountAtLocation == 0;
@@ -167,5 +226,29 @@ public class EmployeeServiceImpl implements EmployeeService {
         return StreamSupport.stream(equipmentRepository.findAll().spliterator(), false)
                 .filter(equipment -> equipment.getLocatedAt().getId().equals(location.getId()) && equipment.getType() == type)
                 .count();
+    }
+
+    private int getMinimalSalaryAtLocationForJob(Location location, Employee.Job job) {
+        return StreamSupport.stream(employeeRepository.findAll().spliterator(), false)
+                .filter(e -> e.getWorksAt().getId().equals(location.getId()) && e.getJob() == job)
+                .min(Comparator.comparingInt(Employee::getSalary))
+                .map(Employee::getSalary)
+                .orElse(-1);
+    }
+
+    private int getMaximalSalaryAtLocation(Location location) {
+        return StreamSupport.stream(employeeRepository.findAll().spliterator(), false)
+                .filter(e -> e.getWorksAt().getId().equals(location.getId()))
+                .max(Comparator.comparingInt(Employee::getSalary))
+                .map(Employee::getSalary)
+                .orElse(-1);
+    }
+
+    private double getAverageSalaryAtLocationForJob(Location location, Employee.Job job) {
+        return StreamSupport.stream(employeeRepository.findAll().spliterator(), false)
+                .filter(e -> e.getWorksAt().getId().equals(location.getId()) && e.getJob() == job)
+                .mapToInt(Employee::getSalary)
+                .average()
+                .orElse(-1.0);
     }
 }

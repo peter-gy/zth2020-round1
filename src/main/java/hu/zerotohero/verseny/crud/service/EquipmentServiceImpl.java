@@ -6,6 +6,7 @@ import hu.zerotohero.verseny.crud.exception.EntityDependenceException;
 import hu.zerotohero.verseny.crud.repository.EmployeeRepository;
 import hu.zerotohero.verseny.crud.repository.EquipmentRepository;
 import hu.zerotohero.verseny.crud.repository.LocationRepository;
+import hu.zerotohero.verseny.crud.util.EntityValidator;
 import hu.zerotohero.verseny.crud.util.PropertyCopier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class EquipmentServiceImpl implements EquipmentService {
     @Override
     public Equipment createEquipment(Equipment equipment) {
         validateDependencyExistence(equipment);
+        validateInput(equipment);
         equipment.setLocatedAt(locationRepository.findById(equipment.getLocatedAt().getId()).get());
         return equipmentRepository.save(equipment);
     }
@@ -44,6 +46,7 @@ public class EquipmentServiceImpl implements EquipmentService {
         PropertyCopier.copyNonNullProperties(equipment, toUpdate);
 
         validateDependencyExistence(toUpdate);
+        validateInput(toUpdate);
         toUpdate.setLocatedAt(locationRepository.findById(toUpdate.getLocatedAt().getId()).get());
         validatePlacementLogic(id);
 
@@ -85,6 +88,10 @@ public class EquipmentServiceImpl implements EquipmentService {
                             dependentEmployeeIds);
             throw new EntityDependenceException(message);
         }
+    }
+
+    private void validateInput(Equipment equipment) {
+        EntityValidator.validateEquipment(equipment);
     }
 
     // Pre-deletion

@@ -21,6 +21,7 @@ CREATE TABLE Employee (
     id BIGSERIAL NOT NULL,
     job VARCHAR(255) NOT NULL,
     name VARCHAR(255) NOT NULL,
+    salary INT NOT NULL,
     operates_id INT NOT NULL,
     works_at_id INT NOT NULL,
     PRIMARY KEY(id)

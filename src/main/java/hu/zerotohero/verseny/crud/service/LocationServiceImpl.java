@@ -7,6 +7,7 @@ import hu.zerotohero.verseny.crud.exception.EntityDependenceException;
 import hu.zerotohero.verseny.crud.repository.EmployeeRepository;
 import hu.zerotohero.verseny.crud.repository.EquipmentRepository;
 import hu.zerotohero.verseny.crud.repository.LocationRepository;
+import hu.zerotohero.verseny.crud.util.EntityValidator;
 import hu.zerotohero.verseny.crud.util.PropertyCopier;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -33,6 +34,7 @@ public class LocationServiceImpl implements LocationService {
 
     @Override
     public Location createLocation(Location location) {
+        validateInput(location);
         return locationRepository.save(location);
     }
 
@@ -41,6 +43,8 @@ public class LocationServiceImpl implements LocationService {
         Location toUpdate = locationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("No location with an id of " + id + " was found"));
         PropertyCopier.copyNonNullProperties(location, toUpdate);
+
+        validateInput(location);
         return locationRepository.save(toUpdate);
     }
 
@@ -79,6 +83,10 @@ public class LocationServiceImpl implements LocationService {
                                             dependentEquipmentIds, dependentEmployeeIds);
             throw new EntityDependenceException(message);
         }
+    }
+
+    private void validateInput(Location location) {
+        EntityValidator.validateLocation(location);
     }
 
 }
