@@ -2,7 +2,6 @@ package hu.zerotohero.verseny.steps;
 
 import hu.zerotohero.verseny.steps.service.StepsService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,8 +16,8 @@ public class StepsController {
     private final StepsService stepsService;
 
     @GetMapping("/getNumberOfSteps")
-    public Integer getNumberOfSteps(@RequestParam(value = "numberOfStair") Integer numberOfStair,
-                                    @RequestParam(value = "stepSizeList") List<Integer> stepSizeList) {
+    public long getNumberOfSteps(@RequestParam(value = "numberOfStair") Integer numberOfStair,
+                                    @RequestParam(value = "stepSizeList") List<Long> stepSizeList) {
         return stepsService.getNumberOfSteps(numberOfStair, stepSizeList);
     }
 
