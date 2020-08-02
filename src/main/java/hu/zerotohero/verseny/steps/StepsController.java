@@ -18,7 +18,7 @@ public class StepsController {
 
     @GetMapping("/getNumberOfSteps")
     public long getNumberOfSteps(@RequestParam(value = "numberOfStair") Integer numberOfStair,
-                                    @RequestParam(value = "stepSizeList") List<Long> stepSizeList) {
+                                    @RequestParam(value = "stepSizeList") List<Integer> stepSizeList) {
         return stepsService.getNumberOfSteps(numberOfStair, stepSizeList);
     }
 

@@ -4,6 +4,6 @@ import java.util.List;
 
 public interface StepsService {
 
-    long getNumberOfSteps(int numberOfStairs, List<Long> stepSizeList);
+    long getNumberOfSteps(int numberOfStairs, List<Integer> stepSizeList);
 
 }
