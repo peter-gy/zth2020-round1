@@ -18,6 +18,9 @@ public class StepsServiceGeneratorImpl implements StepsService {
         if (stepSizeList.stream().anyMatch(i -> i <= 0))
             throw new IllegalArgumentException("stepSizeList should not contain non-positive values");
 
+        if (numberOfStairs > 20)
+            throw new IllegalArgumentException("This input would kill my Heroku dyno... Don't try to hurt her please🥺");
+
         // remove duplicates
         stepSizeList = new ArrayList<>(new HashSet<>(stepSizeList));
         if (stepSizeList.isEmpty()) return 1;
