@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Primary
 @Service
@@ -17,12 +18,20 @@ public class StepsServiceGeneratorImpl implements StepsService {
         if (stepSizeList.stream().anyMatch(i -> i <= 0))
             throw new IllegalArgumentException("stepSizeList should not contain non-positive values");
 
-        List<List<Integer>> lists = generateRepresentations(numberOfStairs)
-                .get(numberOfStairs - 1);
-        System.out.println("lists = " + lists);
-        return lists.stream()
+        // remove duplicates
+        stepSizeList = new ArrayList<>(new HashSet<>(stepSizeList));
+        if (stepSizeList.isEmpty()) return 1;
+        // add 1 if not present
+        if (!stepSizeList.contains(1)) stepSizeList.add(1);
+
+        List<List<Integer>> variations = generateRepresentations(numberOfStairs)
+                .get(numberOfStairs - 1)
+                .stream()
                 .filter(stepSizeList::containsAll)
-                .count();
+                .collect(Collectors.toList());
+
+        //variations.forEach(System.out::println);
+        return variations.size();
     }
 
     private static List<List<List<Integer>>> generateRepresentations(int n) {
@@ -59,9 +68,7 @@ public class StepsServiceGeneratorImpl implements StepsService {
                     curExtra.addAll(0, prev.get(k));
                     representation.add(curExtra);
                 }
-
             }
-
         }
         return representations;
     }
