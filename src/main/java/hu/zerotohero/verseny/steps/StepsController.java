@@ -2,6 +2,7 @@ package hu.zerotohero.verseny.steps;
 
 import hu.zerotohero.verseny.steps.service.StepsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
